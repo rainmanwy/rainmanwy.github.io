@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Python的抽象类学习-1 - Rainman's Blog</title>
+
+  <!-- Edit site and author settings in `_config.yml` to make the social details your own -->
+
+    <meta content="Rainman's Blog" property="og:site_name">
+  
+    <meta content="Python的抽象类学习-1" property="og:title">
+  
+  
+    <meta content="article" property="og:type">
+  
+  
+    <meta content="最近在通过源代码的方式学习python的抽象类。有一些心得体会，希望能记录下来。学习的时候是基于python3.6，以及cpython master上的源代码来了解的。我对c语言，以及cpython的实现并不熟悉，所以c实现部分只是大概了解了一下。" property="og:description">
+  
+  
+    <meta content="http://localhost:4000/Python%E7%9A%84%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%AD%A6%E4%B9%A0-1/" property="og:url">
+  
+  
+    <meta content="2017-11-03T00:00:00+08:00" property="article:published_time">
+    <meta content="http://localhost:4000/about/" property="article:author">
+  
+  
+    <meta content="/img/rainmanwy.png" property="og:image">
+  
+  
+    
+  
+  
+    
+    <meta content="python" property="article:tag">
+    
+  
+
+  
+    <meta name="twitter:card" content="最近在通过源代码的方式学习python的抽象类。有一些心得体会，希望能记录下来。学习的时候是基于python3.6，以及cpython master上的源代码来了解的。我对c语言，以及cpython的实现并不熟悉，所以c实现部分只是大概了解了一下。">
+  
+    <meta name="twitter:site" content="@">
+    <meta name="twitter:creator" content="@">
+  
+    <meta name="twitter:title" content="Python的抽象类学习-1">
+  
+  
+    <meta name="twitter:url" content="http://localhost:4000/Python%E7%9A%84%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%AD%A6%E4%B9%A0-1/">
+  
+  
+    <meta name="twitter:description" content="最近在通过源代码的方式学习python的抽象类。有一些心得体会，希望能记录下来。学习的时候是基于python3.6，以及cpython master上的源代码来了解的。我对c语言，以及cpython的实现并不熟悉，所以c实现部分只是大概了解了一下。">
+  
+  
+    <meta name="twitter:image:src" content="http://localhost:4000/rainmanwy/img/rainmanwy.png">
+  
+
+	<meta name="description" content="最近在通过源代码的方式学习python的抽象类。有一些心得体会，希望能记录下来。学习的时候是基于python3.6，以及cpython master上的源代码来了解的。我对c语言，以及cpython的实现并不熟悉，所以c实现部分只是大概了解了一下。">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta property="og:image" content="">
+	<link rel="shortcut icon" href="/rainmanwy/assets/img/favicon/favicon.ico" type="image/x-icon">
+	<link rel="apple-touch-icon" href="/rainmanwy/assets/img/favicon/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/rainmanwy/assets/img/favicon/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/rainmanwy/assets/img/favicon/apple-touch-icon-114x114.png">
+	<!-- Chrome, Firefox OS and Opera -->
+	<meta name="theme-color" content="#263959">
+	<!-- Windows Phone -->
+	<meta name="msapplication-navbutton-color" content="#263959">
+	<!-- iOS Safari -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="#263959">
+	<!-- Google Fonts -->
+	<!-- <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet"> -->
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="/rainmanwy/assets/fonts/font-awesome/css/font-awesome.min.css">
+	<!-- Styles -->
+	<link rel="stylesheet" href="/rainmanwy/assets/css/main.css">
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <aside class="sidebar">
+  <header>
+    <div class="about">
+      <div class="cover-author-image">
+        <a href="/rainmanwy/"><img src="/rainmanwy/assets/img/rainmanwy.png" alt="Rainmanwy"></a>
+      </div>
+      <div class="author-name">Rainmanwy</div>
+      <p>I am a test automation developer, love coding.</p>
+    </div>
+  </header> <!-- End Header -->
+  <footer>
+    <section class="contact">
+      <h3 class="contact-title">Contact me</h3>
+      <ul>
+        
+        
+        
+          <li class="github"><a href="http://github.com/rainmanwy" target="_blank"><i class="fa fa-github"></i></a></li>
+        
+        
+          <li class="linkedin"><a href="https://in.linkedin.com/in/杨-王-50b1244a" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        
+        
+          <li class="email"><a href="mailto:wang_yang1980@hotmail.com"><i class="fa fa-envelope-o"></i></a></li>
+        
+      </ul>
+    </section> <!-- End Section Contact -->
+    <div class="copyright">
+      <p>2017 &copy; Rainmanwy</p>
+    </div>
+  </footer> <!-- End Footer -->
+</aside> <!-- End Sidebar -->
+<div class="content-box clearfix">
+  <article class="article-page">
+  <div class="page-content">
+    
+    
+    <div class="wrap-content">
+      <header class="header-page">
+        <h1 class="page-title">Python的抽象类学习-1</h1>
+        <div class="page-date"><span>2017, Nov 03&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+      </header>
+      <p>最近在通过源代码的方式学习python的抽象类。有一些心得体会，希望能记录下来。学习的时候是基于python3.6，以及cpython master上的源代码来了解的。我对c语言，以及cpython的实现并不熟悉，所以c实现部分只是大概了解了一下。</p>
+
+<h2 id="实现自己的抽象类">实现自己的抽象类</h2>
+<p>python的abc模块中定义了抽象类的metaclass类ABCMeta，以及抽象方法装饰器abstractmethod, abstractclassmethod, abstractstaticmethod，抽象property装饰器abstractproperty等。我们可以基于这些工具来实现自己的抽象类，比如</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from abc import ABCMeta
+from abc import abstractmethod
+
+class MyAbstractClass(metaclass=ABCMeta):
+    
+    @abstractmethod
+    def my_method(self):
+        raise NotImplementedError('my_method is not implemented')
+</code></pre></div></div>
+
+<h2 id="不能实例化抽象类">不能实例化抽象类</h2>
+<p>首先尝试实例化MyAbstractClass看看：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst = MyAbstractClass()
+inst.my_method()
+
+输出错误：
+TypeError: Can't instantiate abstract class MyAbstractClass with abstract methods my_method
+</code></pre></div></div>
+<p>从错误报告可以看出，抽象类不允许实例化。我们知道实例化都是在__new__中进行了，查看ABCMeta无法找到这样的字符串。如果搜索cpython的实现，可以在“typeobject.c”中看到“object_new”方法会抛出这样的异常：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static PyObject *
+object_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    ...
+    if (type-&gt;tp_flags &amp; Py_TPFLAGS_IS_ABSTRACT) {
+        ...
+        PyErr_Format(PyExc_TypeError,
+                     "Can't instantiate abstract class %s "
+                     "with abstract methods %U",
+                     type-&gt;tp_name,
+                     joined);
+    ...
+    }
+    return type-&gt;tp_alloc(type, 0);
+}
+</code></pre></div></div>
+<p>从中，我们可以看到tp_flags如果有表示抽象的标志”Py_TPFLAGS_IS_ABSTRACT”，则会抛出这样的异常。那“tp_flags”是怎么设置上这个标志的呢，同样在typeobject.c中：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static int
+type_set_abstractmethods(PyTypeObject *type, PyObject *value, void *context)
+{
+    /* __abstractmethods__ should only be set once on a type, in
+       abc.ABCMeta.__new__, so this function doesn't do anything
+       special to update subclasses.
+    */
+    ...
+    if (res == 0) {
+        PyType_Modified(type);
+        if (abstract)
+            type-&gt;tp_flags |= Py_TPFLAGS_IS_ABSTRACT;
+        else
+            type-&gt;tp_flags &amp;= ~Py_TPFLAGS_IS_ABSTRACT;
+    }
+    return res;
+}
+</code></pre></div></div>
+<p>从这里可以猜测，当一个类有通过抽象方法相关的装饰器装饰后的方法时，python在初始化这个类的时候，会设置这个类为抽象类，而不允许实例化。可以把“my_method”上的装饰器移除掉：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from abc import ABCMeta
+from abc import abstractmethod
+
+class MyAbstractClass(metaclass=ABCMeta):
+    
+    def my_method(self):
+        raise NotImplementedError('my_method is not implemented')
+
+inst = MyAbstractClass()
+inst.my_method()
+
+输出：
+NotImplementedError: my_method is not implemented
+</code></pre></div></div>
+<p>可以看到，MyAbstractClass能够被初始化了。</p>
+
+<h2 id="标记抽象方法">标记抽象方法</h2>
+
+<p>刚才看到，C实现通过判断“<strong>abstractmethods</strong> ”，以此来设置类是否是抽象类。在此可以先看下装饰器做了什么事情：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def abstractmethod(funcobj):
+    funcobj.__isabstractmethod__ = True
+    return funcobj
+</code></pre></div></div>
+<p>装饰器对函数对象增加了属性“<strong>isabstractmethod</strong>”。在ABCMeta的__new__中：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    def __new__(mcls, name, bases, namespace):
+        cls = super().__new__(mcls, name, bases, namespace)
+        # Compute set of abstract method names
+        abstracts = {name
+                     for name, value in namespace.items()
+                     if getattr(value, "__isabstractmethod__", False)}
+        for base in bases:
+            for name in getattr(base, "__abstractmethods__", set()):
+                value = getattr(cls, name, None)
+                if getattr(value, "__isabstractmethod__", False):
+                    abstracts.add(name)
+        cls.__abstractmethods__ = frozenset(abstracts)
+        ...
+        return cls
+</code></pre></div></div>
+<p>可以看到在创建实例时，会获取类以及其父类中有”<strong>isabstractmethod</strong>“，并且值为True的方法，保存在“<strong>abstractmethods</strong>”中。而python的C实现，正是通过判断“<strong>abstractmethods</strong>”，来决定是否是抽象类。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class MyAbstractClass(metaclass=ABCMeta):
+    
+    @abstractmethod
+    def my_method(self):
+        raise NotImplementedError('my_method is not implemented')
+
+print(MyAbstractClass.__abstractmethods__)
+print(MyAbstractClass.my_method.__isabstractmethod__)
+
+输出：
+frozenset({'my_method'})
+True
+</code></pre></div></div>
+<p><strong>ABCMetada的__new__中有一个小细节， “value = getattr(cls, name, None)”，获取继承的父类的方法时，并不是直接从父类的“__abstractmethods__”中得到，而是通过getattr从子类本身获取，这个是处理当子类实现了父类的抽象方法时，获取的是子类的实现。</strong></p>
+
+<h2 id="继承抽象类">继承抽象类</h2>
+
+<p>首先写一个子类，但是不实现父类的抽象方法</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class MyImplement(MyAbstractClass):
+    pass
+
+print(MyImplement.__abstractmethods__)
+print(MyImplement.my_method.__isabstractmethod__)
+inst = MyImplement()
+
+输出：
+
+frozenset({'my_method'})
+True
+Traceback (most recent call last):
+  File "e:\test1.py", line 56, in &lt;module&gt;
+    inst = MyImplement()
+TypeError: Can't instantiate abstract class MyImplement with abstract methods my_method
+</code></pre></div></div>
+<p>可见由于父类的抽象方法未被覆盖，所以子类依然被认为是抽象类。如果实现了抽象方法呢</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class MyImplement(MyAbstractClass):
+    
+    def my_method(self):
+        print('my_method')
+
+print(MyImplement.__abstractmethods__)
+# 由于my_method方法被覆盖，没有__isabstractmethod__属性，此行会报错
+# print(MyImplement.my_method.__isabstractmethod__)
+inst = MyImplement()
+inst.my_method()
+
+输出：
+frozenset()
+my_method
+</code></pre></div></div>
+<p>由于子类实现了抽象方法（覆盖）。方法本身没有“<strong>isabstractmethod</strong>”，因此“<strong>abstractmethods</strong>”为空，子类可以初始化。</p>
+
+<h2 id="结论">结论</h2>
+
+<ul>
+  <li>一个类是否是一个抽象类，是由类的__abstractmethods__来决定的。python的C实现会通过这个属性，来决定是否为抽象类。</li>
+  <li>__abstractmethods__是一个set，包含类中所有的抽象方法（包括继承的）。</li>
+  <li>通过检查类的方法（包括继承过来的方法），是否有“<strong>isabstractmethod</strong>”属性，且值为True，来判断方法是否是抽象方法。也即是说，如果类本身实现了父类的抽象方法，则此方法不再有“<strong>isabstractmethod</strong>”属性。抽象方法装饰器做的，就是给方法加上“<strong>isabstractmethod</strong>”属性，并设置为True.</li>
+</ul>
+
+      <div class="page-footer">
+        <div class="page-share">
+          <a href="https://twitter.com/intent/tweet?text=Python的抽象类学习-1&url=http://localhost:4000/Python%E7%9A%84%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%AD%A6%E4%B9%A0-1/" title="Share on Twitter" rel="nofollow" target="_blank">Twitter</a>
+          <a href="https://facebook.com/sharer.php?u=http://localhost:4000/Python%E7%9A%84%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%AD%A6%E4%B9%A0-1/" title="Share on Facebook" rel="nofollow" target="_blank">Facebook</a>
+          <a href="https://plus.google.com/share?url=http://localhost:4000/Python%E7%9A%84%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%AD%A6%E4%B9%A0-1/" title="Share on Google+" rel="nofollow" target="_blank">Google+</a>
+        </div>
+        <div class="page-tag">
+          
+            <a href="/rainmanwy/tags#python" class="tag">&#35; python</a>
+          
+        </div>
+      </div>
+      <section class="comment-area">
+  <div class="comment-wrapper">
+    
+  </div>
+</section> <!-- End Comment Area -->
+
+    </div> <!-- End Wrap Content -->
+  </div> <!-- End Page Content -->
+</article> <!-- End Article Page -->
+
+</div>
+
+  </div>
+  
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', '', 'auto');
+  ga('send', 'pageview');
+</script> <!-- End Analytics -->
+
+</body>
+</html>

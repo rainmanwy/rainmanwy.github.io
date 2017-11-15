@@ -1,0 +1,37 @@
+title: Rainman's Blog
+description: > # this means to ignore newlines until "baseurl:"
+  Write an awesome description for your new site here. You can edit this
+  line in _config.yml. It will appear in your document head meta (for
+  Google search results) and in your feed.xml site description.
+permalink: ':title/'
+baseurl: "/rainmanwy" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+site-twitter: "" #if your site has a twitter account, enter it here
+
+# Author Settings
+author: Rainmanwy # add your name
+author-img: rainmanwy.png # add your photo
+about-author: I am a test automation developer, love coding. # add description
+#twitter: # add your Twitter handle
+#facebook: # add your Facebook handle
+github: rainmanwy # add your Github handle
+linkedin: 杨-王-50b1244a # add your Linkedin handle
+email: wang_yang1980@hotmail.com # add your Email address
+
+# Disqus
+discus-identifier:  # add your discus identifier
+
+# Tracker
+analytics: # Google Analytics
+
+# Build Settings
+markdown: kramdown
+plugins_dir:
+  - jekyll-sitemap
+  - jekyll-paginate
+  - jemoji
+
+paginate: 8
+paginate_path: "/page/:num"
+
+exclude: ["node_modules", "gulpfile.js", "package.json", "yarn.lock"]
